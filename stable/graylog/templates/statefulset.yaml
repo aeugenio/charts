@@ -11,6 +11,7 @@ metadata:
 spec:
   serviceName: {{ template "graylog.fullname" . }}
   replicas: {{ .Values.graylog.replicas }}
+  updateStrategy: {{ .Values.graylog.updateStrategy }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "graylog.name" . }}
@@ -24,8 +25,8 @@ spec:
         app.kubernetes.io/managed-by: "{{ .Release.Service }}"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
-      annotations:
       {{- if .Values.graylog.podAnnotations }}
+      annotations:      
       {{- range $key, $value := .Values.graylog.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
@@ -35,8 +36,7 @@ spec:
         prometheus.io/port: "9000"
       {{- end }}
     spec:
-      serviceAccountName: {{ template "graylog.serviceAccountName" . }}
-      updateStrategy: {{ .Values.graylog.updateStrategy }}
+      serviceAccountName: {{ template "graylog.serviceAccountName" . }}      
 {{- if .Values.graylog.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.graylog.nodeSelector | indent 8 }}
